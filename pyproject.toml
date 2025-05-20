@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.black]
+line_length = 120
+target_version = ["py36","py37","py38"]
+
+[tool.flakehell]
+format = "colored"
+show_source = true
+extended_default_ignore = []
+exclude = []
+max_line_length = 120
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.pytest.ini_options]
+addopts = "--cov"
+testpaths = [
+    "test",
+]
+
+[tool.coverage.run]
+source = [
+    "eta_ml_lib",
+]
+omit = [
+    "*/venv/*",
+    "*/.venv/*",
+    "*/docs/*",
+    "*/build/*",
+    "*/dist/*",
+]
+
