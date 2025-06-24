@@ -14,6 +14,7 @@ The paper investigates continual learning for industrial load forecasting, and p
 
 ## Repository structure
 
+```
 [project_root/](https://github.com/r-squared-ptw/Continual-learning-for-very-short-term-load-forecasting-a-case-study-on-parts-cleaning/tree/)
 ├── main/ # Main code folder
 │ ├── EWC.py # elastic weight consolidation
@@ -25,6 +26,7 @@ The paper investigates continual learning for industrial load forecasting, and p
 │ ├── cdd_regression.py # concept drift detection for regression
 │ └── my_monitoring_metrics.py # continual learning performance monitoring
 └── ...
+```
 
 ## Licence
 
