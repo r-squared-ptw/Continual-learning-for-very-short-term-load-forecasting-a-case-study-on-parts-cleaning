@@ -2,8 +2,6 @@ import tensorflow as tf
 import copy
 from tensorflow.keras import Model
 
-from eta_ml_lib.basics.utils import log
-
 # CustomModel class to override parts of the tf training loop (loss function needs x values of current training set in a batchwise manner).
 class CustomModel(Model):
     def train_step(self, data):
@@ -63,7 +61,7 @@ class LWF:
         :param penalty_loss_fn: The loss function that is used to compute the penalty term. 
         :param _lambda: Regularization parameter. The higher the more the model is penalized for straying too far from the original predictions.
         """
-        log.info("Starting retraining....")
+        print("Starting retraining....")
         
         # save models of prior tasks for penalty calculations
         self.prior_models.append(tf.keras.models.clone_model(model))
@@ -88,10 +86,10 @@ class LWF:
             model2.build(input_shape=model.layers[0].input_shape)
             model2.compile(optimizer=optimizer, loss=lwf_loss_fn)
             model2.set_weights(copy.deepcopy(self.prior_models[-1].weights))
-        log.info("Fitting model....")
+        print("Fitting model....")
         model2.fit(train_set[0], train_set[1], epochs=epochs)
 
         if test_set is not None:
-            log.info("Test-Set Loss: " + str(loss_fn(model2.predict(test_set[0]), test_set[1])))
+            print("Test-Set Loss: " + str(loss_fn(model2.predict(test_set[0]), test_set[1])))
 
         return model2

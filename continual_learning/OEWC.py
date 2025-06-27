@@ -5,8 +5,6 @@ import tensorflow as tf
 import copy
 import random
 
-from eta_ml_lib.basics.utils import log
-
 class OEWC:
     """
     Class for Online Elastic Weight Consolidation to tackle Concept Drift.
@@ -74,9 +72,9 @@ class OEWC:
         :param lambda_: Regularization parameter. The higher the more the model is penalized for changing the weights.
         :param gamma: Regulates the gradual decay of each previous task's contribution (gamma <= 1).
         """
-        log.info("Starting retraining....")
+        print("Starting retraining....")
         prior_weights = copy.deepcopy(model.weights)
-        log.info("Calculating parameter importance....")
+        print("Calculating parameter importance....")
         self.fisher_matrix = gamma * self.fisher_matrix + self.compute_fisher(model, data_samples, num_samples)
 
         # Define Loss function to be used during Retraining
@@ -96,10 +94,10 @@ class OEWC:
             model = new_model
             model.compile(optimizer=optimizer, loss=oewc_loss_fn)
             model.set_weights(copy.deepcopy(prior_weights))
-        log.info("Fitting model....")
+        print("Fitting model....")
         history = model.fit(train_set[0], train_set[1], epochs=epochs)
         
         if test_set is not None:
-            log.info("Test-Set Loss: " + str(loss_fn(model.predict(test_set[0]), test_set[1])))
+            print("Test-Set Loss: " + str(loss_fn(model.predict(test_set[0]), test_set[1])))
 
         return model

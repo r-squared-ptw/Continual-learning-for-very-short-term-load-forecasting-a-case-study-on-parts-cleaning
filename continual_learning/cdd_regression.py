@@ -8,8 +8,6 @@ from river.drift.binary import EDDM as eddm
 from scipy.stats import norm
 from sklearn.metrics import mean_absolute_error
 
-from eta_ml_lib.basics.utils import log
-
 
 class ConceptDriftDetector:
     """
@@ -53,7 +51,7 @@ class ConceptDriftDetector:
         assert len(self.y_pred) == len(self.y_true)
 
         if not (self.y_true.index == self.y_pred.index).all():
-            log.warning(
+            print(
                 "DatetimeIndexes of groundtruth and prediction do not match up. The algorithm will proceed as if the indexes are correct. If this occurs regularly, verfify your data collection."
             )
             self.y_true.index = self.y_pred.index
@@ -76,18 +74,18 @@ class ConceptDriftDetector:
                     >= self.error_min + self.standard_deviation_min * self.warning_level_zscore
                 ):
                     self.warning_level_reached = True
-                    log.warning("Concept Drift Detection reached warning level.")
+                    print("Concept Drift Detection reached warning level.")
                 else:
                     self.warning_level_reached = False
 
                 if error + standard_deviation >= self.error_min + self.standard_deviation_min * self.alert_level_zscore:
                     self.alert_level_reached = True
-                    log.warning("Concept Drift Detection reached alert level.")
+                    print("Concept Drift Detection reached alert level.")
                 else:
                     self.alert_level_reached = False
 
             if self.warning_level_reached is False and self.alert_level_reached is False:
-                log.info("No Concept Drift detected.")
+                print("No Concept Drift detected.")
                 self.error_min = error
                 self.standard_deviation_min = standard_deviation
 
@@ -102,7 +100,7 @@ class ConceptDriftDetector:
         else:
             self.warning_level_reached = False
             self.alert_level_reached = False
-            log.info("Not enough data collected for specified window size.")
+            print("Not enough data collected for specified window size.")
 
 
 class PageHinkleyConceptDriftDetector:
@@ -151,7 +149,7 @@ class PageHinkleyConceptDriftDetector:
         assert len(self.y_pred) == len(self.y_true)
 
         if not (self.y_true.index == self.y_pred.index).all():
-            log.warning(
+            print(
                 "DatetimeIndexes of groundtruth and prediction do not match up. The algorithm will proceed as if the indexes are correct. If this occurs regularly, verfify your data collection."
             )
             self.y_true.index = self.y_pred.index
@@ -168,21 +166,21 @@ class PageHinkleyConceptDriftDetector:
 
         # test for concept drift
         if self.sample_count < self.min_instances:
-            log.info("Not enough data collected for specified min_instances.")
+            print("Not enough data collected for specified min_instances.")
         else:
             if self.sum > self.alert_level:
                 self.alert_level_reached = True
                 self.warning_level_reached = True
-                log.warning("Concept Drift Detection reached alert level.")
+                print("Concept Drift Detection reached alert level.")
             else:
                 if self.sum > self.warning_level:
                     self.alert_level_reached = False
                     self.warning_level_reached = True
-                    log.warning("Concept Drift Detection reached warning level.")
+                    print("Concept Drift Detection reached warning level.")
                 else:
                     self.alert_level_reached = False
                     self.warning_level_reached = False
-                    log.info("No Concept Drift detected.")
+                    print("No Concept Drift detected.")
 
 
 class ADWIN:
@@ -228,7 +226,7 @@ class ADWIN:
         assert len(self.y_pred) == len(self.y_true)
 
         if not (self.y_true.index == self.y_pred.index).all():
-            log.warning(
+            print(
                 "DatetimeIndexes of groundtruth and prediction do not match up. The algorithm will proceed as if the indexes are correct. If this occurs regularly, verfify your data collection."
             )
             self.y_true.index = self.y_pred.index
@@ -238,10 +236,10 @@ class ADWIN:
 
         if self.detector.drift_detected:
             self.alert_level_reached = True
-            log.warning("Concept Drift detected.")
+            print("Concept Drift detected.")
         else:
             self.alert_level_reached = False
-            log.info("No Concept Drift detected.")
+            print("No Concept Drift detected.")
 
 
 class KSWIN:
@@ -280,7 +278,7 @@ class KSWIN:
         assert len(self.y_pred) == len(self.y_true)
 
         if not (self.y_true.index == self.y_pred.index).all():
-            log.warning(
+            print(
                 "DatetimeIndexes of groundtruth and prediction do not match up. The algorithm will proceed as if the indexes are correct. If this occurs regularly, verfify your data collection."
             )
             self.y_true.index = self.y_pred.index
@@ -290,10 +288,10 @@ class KSWIN:
 
         if self.detector.drift_detected:
             self.alert_level_reached = True
-            log.warning("Concept Drift detected.")
+            print("Concept Drift detected.")
         else:
             self.alert_level_reached = False
-            log.info("No Concept Drift detected.")
+            print("No Concept Drift detected.")
 
 
 class EWMAConceptDriftDetector:
@@ -340,7 +338,7 @@ class EWMAConceptDriftDetector:
         assert len(self.y_pred) == len(self.y_true)
 
         if not (self.y_true.index == self.y_pred.index).all():
-            log.warning(
+            print(
                 "DatetimeIndexes of groundtruth and prediction do not match up. The algorithm will proceed as if the indexes are correct. If this occurs regularly, verfify your data collection."
             )
             self.y_true.index = self.y_pred.index
@@ -360,7 +358,7 @@ class EWMAConceptDriftDetector:
                     variance = sum([((x - mean) ** 2) for x in self.starting_samples]) / len(self.starting_samples)
                     self.sigma = variance**0.5
             else:
-                log.info("Not enough data collected for specified min_samples.")
+                print("Not enough data collected for specified min_samples.")
         else:
             # update EWMA value
             error = self.metric(y_true, y_pred)
@@ -377,10 +375,10 @@ class EWMAConceptDriftDetector:
 
             if self.ewma_value > ucl or self.ewma_value < lcl:
                 self.alert_level_reached = True
-                log.warning("Concept Drift detected.")
+                print("Concept Drift detected.")
             else:
                 self.alert_level_reached = False
-                log.info("No Concept Drift detected.")
+                print("No Concept Drift detected.")
 
 
 class EDDMConceptDriftDetector:
@@ -419,7 +417,7 @@ class EDDMConceptDriftDetector:
         assert len(self.y_pred) == len(self.y_true)
 
         if not (self.y_true.index == self.y_pred.index).all():
-            log.warning(
+            print(
                 "DatetimeIndexes of groundtruth and prediction do not match up. The algorithm will proceed as if the indexes are correct. If this occurs regularly, verfify your data collection."
             )
             self.y_true.index = self.y_pred.index
@@ -433,13 +431,13 @@ class EDDMConceptDriftDetector:
         if self.detector.drift_detected:
             self.warning_level_reached = True
             self.alert_level_reached = True
-            log.warning("Concept Drift Detection reached alert level.")
+            print("Concept Drift Detection reached alert level.")
         else:
             if self.detector.warning_detected:
                 self.warning_level_reached = True
                 self.alert_level_reached = False
-                log.warning("Concept Drift Detection reached warning level.")
+                print("Concept Drift Detection reached warning level.")
             else:
                 self.warning_level_reached = False
                 self.alert_level_reached = False
-                log.info("No Concept Drift detected.")
+                print("No Concept Drift detected.")

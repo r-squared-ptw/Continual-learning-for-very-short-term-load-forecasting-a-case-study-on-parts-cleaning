@@ -5,8 +5,6 @@ import tensorflow as tf
 import copy
 from tensorflow.keras import Model
 
-from eta_ml_lib.basics.utils import log
-
 # CustomModel class to override parts of the tf training loop (small omega needs to be updated after every epoch).
 class CustomModel(Model):
     def __init__(self,  *args, **kwargs):
@@ -96,7 +94,7 @@ class SI:
                     penalty += tf.reduce_sum(tf.multiply(self.si_model.big_omega_var[weight.name], tf.square(weight - self.si_model.previous_weights[weight.name])))
             return loss, c * penalty
         
-        log.info("Starting retraining....")
+        print("Starting retraining....")
         # Compile model to use new loss function but keep original weights
         with self.strategy.scope():
             if self.si_model is None:
@@ -111,10 +109,10 @@ class SI:
                     self.si_model.previous_weights[weight.name] = tf.Variable(copy.deepcopy(weight), trainable=False)
 
             self.si_model.compile(optimizer=optimizer, loss=si_loss_fn)
-        log.info("Fitting model....")
+        print("Fitting model....")
         self.si_model.fit(train_set[0], train_set[1], epochs=epochs)
 
-        log.info("Calculating parameter importance....")
+        print("Calculating parameter importance....")
         with self.strategy.scope():
         # After each task is complete, update big_omega and reset small_omega and store weights
             for weight in self.si_model.trainable_weights:
@@ -124,7 +122,7 @@ class SI:
                 self.si_model.previous_weights[weight.name] = tf.Variable(copy.deepcopy(weight), trainable=False)
 
         if test_set is not None:
-            log.info("Test-Set Loss: " + str(loss_fn(self.si_model.predict(test_set[0]), test_set[1])))
+            print("Test-Set Loss: " + str(loss_fn(self.si_model.predict(test_set[0]), test_set[1])))
 
         # return a copy of the model so that it can be used independently from the class
         return_model = tf.keras.models.clone_model(self.si_model)

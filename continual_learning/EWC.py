@@ -5,8 +5,6 @@ import tensorflow as tf
 import copy
 import random
 
-from eta_ml_lib.basics.utils import log
-
 class EWC:
     """
     Class for Elastic Weight Consolidation to tackle Concept Drift.
@@ -70,9 +68,9 @@ class EWC:
         :param num_samples: The number of samples to be drawn from the data samples to calculate the fisher matrix.
         :param lambda_: Parameter for tuning the EWC penalty. The lower lambda the more weight is given to the new task during retraining. 
         """
-        log.info("Starting retraining....")
+        print("Starting retraining....")
         self.prior_weights.append(copy.deepcopy(model.weights))
-        log.info("Calculating parameter importance....")
+        print("Calculating parameter importance....")
         self.fisher_matrices.append(self.compute_fisher(model, data_samples, num_samples))
         
         # Define Loss function to be used during Retraining
@@ -92,10 +90,10 @@ class EWC:
             model = new_model
             model.compile(optimizer=optimizer, loss=ewc_loss_fn)
             model.set_weights(copy.deepcopy(self.prior_weights[-1]))
-        log.info("Fitting model....")
+        print("Fitting model....")
         history = model.fit(train_set[0], train_set[1], epochs=epochs)
         
         if test_set is not None:
-            log.info("Test-Set Loss: " + str(loss_fn(model.predict(test_set[0]), test_set[1])))
+            print("Test-Set Loss: " + str(loss_fn(model.predict(test_set[0]), test_set[1])))
 
         return model

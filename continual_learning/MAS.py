@@ -7,8 +7,6 @@ import copy
 import random
 from tensorflow.keras import Model
 
-from eta_ml_lib.basics.utils import log
-
 # CustomModel class to override parts of the tf training loop.
 class CustomModel(Model):
     def __init__(self,  *args, **kwargs):
@@ -91,7 +89,7 @@ class MAS:
                     penalty += tf.reduce_sum(tf.multiply(self.mas_model.big_omega_var[weight.name], tf.square(weight - self.mas_model.previous_weights[weight.name])))
             return loss, lambda_ * penalty
         
-        log.info("Starting retraining....")
+        print("Starting retraining....")
         # Create MAS model that tracks small and big omega
         with self.strategy.scope():
             if self.mas_model is None:
@@ -109,18 +107,18 @@ class MAS:
             for weight in self.mas_model.trainable_weights:
                 self.mas_model.previous_weights[weight.name] = tf.Variable(copy.deepcopy(weight), trainable=False)
 
-        log.info("Fitting model....")
+        print("Fitting model....")
         self.mas_model.fit(train_set[0], train_set[1], epochs=epochs)
         
         # Calculate param importance matrix
-        log.info("Calculating parameter importance....")
+        print("Calculating parameter importance....")
         if self.parameter_importance_via_gradient:
             self.create_importance_matrix_for_task_grad(dataset=train_set, frac=frac)
         else:
             self.create_importance_matrix_for_task_perturbation(dataset=train_set, delta=delta, frac=frac)
 
         if test_set is not None:
-            log.info("Test-Set Loss: " + str(loss_fn(self.mas_model.predict(test_set[0]), test_set[1])))
+            print("Test-Set Loss: " + str(loss_fn(self.mas_model.predict(test_set[0]), test_set[1])))
 
         # return a copy of the model so that it can be used independently from the class
         return_model = tf.keras.models.clone_model(self.mas_model)
