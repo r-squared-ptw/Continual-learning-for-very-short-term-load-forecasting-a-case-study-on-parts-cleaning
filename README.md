@@ -6,9 +6,13 @@ This repository contains the supplementary materials for the paper:
 
 **"Continual Learning for Very Short-Term Load Forecasting: A Case
 Study on Parts Cleaning"**  
+
 by Robin Zink, Jonathan Magin, Oliver Griess, Matthias Weigold 
+
 Affiliation: Institute for Production Management, Technology and Machine Tools (PTW), Technical University of Darmstadt, Otto-Berndt-Str. 2, 64287 Darmstadt, Germany
+
 Submitted to <span style="color:red">*[Journal Name]*, [Year]</span>.  
+
 Available at: <span style="color:red">DOI</span>
 
 
